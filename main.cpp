@@ -4,20 +4,55 @@
 using namespace std;
 
 struct Node {
-    std::string path;
+    string path;
     bool isDirectory;
     struct Node* Parent;
-    std::vector<Node*> children;
+    vector<Node*> children;
     // So as to vary the number of children
 };
 
+void PrintTree(Node* node, string prefix, bool isLast = true) {
+    cout << prefix ;
+    if (isLast) {
+        cout << "└─";
+        prefix += "  ";
+    } else {
+        cout << "├─";
+        prefix += "│ ";
+    }
+    if (node->isDirectory) {
+        cout << "[DIR] ";
+    } else {
+        cout << "[FILE] ";
+    }
+    
+    string path = node->path;
+    
+    const int length = path.length();
+    char* char_array = new char[length + 1];
+    strcpy(char_array, path.c_str());
+    const char* lastOccurrence = strrchr(char_array, '\\');
+    cout << lastOccurrence+1 << endl;
+    
 
-void Scan(const std::string& directoryPath, Node *node) {
+    for (size_t i = 0; i < node->children.size(); i++) {
+        bool isLastChild = (i == node->children.size() - 1);
+        PrintTree(node->children[i], prefix, isLastChild);
+    }
+
+    if (prefix.length() >= 3) {
+        prefix.erase(prefix.length() - 3);
+    }
+}
+
+
+
+
+void Scan(const string& directoryPath, Node *node) {
     WIN32_FIND_DATA findData;
     HANDLE hFind = INVALID_HANDLE_VALUE;           
-    std::string searchPath = directoryPath + "\\*"; 
-    
-    //std::cout << "PASS 1" << std::endl;
+    string searchPath = directoryPath + "\\*"; 
+    //cout << "PASS 1" << endl;
     
     //forming a complete search path using wildcard ch '*' in order to match multiple files or directories
 
@@ -27,15 +62,15 @@ void Scan(const std::string& directoryPath, Node *node) {
     // Using the Windows API to search for file in the specified directory
 
     if (hFind == INVALID_HANDLE_VALUE) {
-        std::cout << "Error opening directory: " << directoryPath << std::endl;
-        //std::cout << "FAIL 1" << std::endl;
+        cout << "Error opening directory: " << directoryPath << endl;
+        //cout << "FAIL 1" << endl;
         return;
     }
 
     //Initiate loop to idetate over all files
     while (1){
 
-        //std::cout << "PASS 2" << std::endl;
+        //cout << "PASS 2" << endl;
         
         // Due to the fact that Windows lists oth current and parent dir of the file within the DIR itself
         // If left unchecked and allowed to read them will cause confusion and may lead to an Infinite loop
@@ -53,14 +88,14 @@ void Scan(const std::string& directoryPath, Node *node) {
         newNode->Parent = node;
         if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
             // DIR
-            std::cout << "[DIR] " << findData.cFileName << std::endl;
+            //cout << "[DIR] " << findData.cFileName << endl;
             newNode->path = directoryPath + "\\" + findData.cFileName;
             newNode->isDirectory = true;
             node->children.push_back(newNode);
             Scan(newNode->path,newNode);
         } else {
             // FILE
-            std::cout << "[FILE] " << findData.cFileName << std::endl;
+            //cout << "[FILE] " << findData.cFileName << endl;
             newNode->path = directoryPath + "\\" + findData.cFileName;
             newNode->isDirectory = false;
             node->children.push_back(newNode);
@@ -75,14 +110,16 @@ void Scan(const std::string& directoryPath, Node *node) {
 }
 
 int main() {
-    std::string directoryPath;
-    std::cin >> directoryPath;
+    string directoryPath;
+    //cin >> directoryPath;
 
-    // C:\\Users\\Aravo\\OneDrive\\Desktop\\Antivirus
+    directoryPath = "C:\\Users\\Aravo\\OneDrive\\Desktop\\Antivirus";
     // Creating pointer to the Parent node and assigning it space
     Node* node = new Node;
     node->isDirectory = true;
     node->path = directoryPath;
     Scan(directoryPath,node);
+    PrintTree(node,"",true);
+
     return 0;
 }
