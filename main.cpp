@@ -3,6 +3,24 @@
 #include <vector>
 using namespace std;
 
+void quarantineFile(const string& filePath) {
+    const int length = filePath.length();
+    char* charArray = new char[length + 1];
+    strcpy(charArray, filePath.c_str());
+    const char* lastOccurrence = strrchr(charArray, '\\');
+    string newFilePath = "C:\\Users\\Aravo\\OneDrive\\Desktop\\Antivirus\\" + string(lastOccurrence + 1);
+    delete[] charArray;
+
+    // Move the file to the quarantine location
+    BOOL moveFileSuccess = MoveFileEx(filePath.c_str(), newFilePath.c_str(), MOVEFILE_REPLACE_EXISTING);
+
+    if(moveFileSuccess){
+
+    }
+    //enc file
+    //Change file perm
+}
+
 struct Node {
     string path;
     bool isDirectory;
@@ -113,7 +131,7 @@ int main() {
     string directoryPath;
     //cin >> directoryPath;
 
-    directoryPath = "C:\\Users\\Aravo\\OneDrive\\Desktop\\Antivirus";
+    directoryPath = "C:\\Users\\Aravo\\OneDrive\\Desktop";
     // Creating pointer to the Parent node and assigning it space
     Node* node = new Node;
     node->isDirectory = true;
@@ -121,5 +139,6 @@ int main() {
     Scan(directoryPath,node);
     PrintTree(node,"",true);
 
+    //quarantineFile("C:\\Users\\Aravo\\OneDrive\\Desktop\\Hello.txt");
     return 0;
 }
