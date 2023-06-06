@@ -7,30 +7,36 @@ using namespace std;
 // & indicates this while Const defines that there is no need to modify the string
 
 bool* stringToBinary(const string& text) {
-    int N = text.length()*8;
-    bool binary[N];
+    bool* binary = new bool[256];
 
-    for (int i=0;i<N;i++) {
+    for (int i=0;i<32;i++) {
         char c = text[i];
         //Seting up a object with bit size 8 as each ch has 8 bits
         int count = 0;
-        for(bool a : bitset<8>(c)){
-            binary[i*8+count] = a;
+        
+        bitset<8> bits(c);
+        for (int j = 0; j < 8; j++) {
+            binary[i * 8 + j] = bits[j];
+            //cout << bits[j];
         }
     }
+    cout << endl;
+    //cout << binary << endl;
     return binary;
 }
 
 //RotWord = one-byte left circular shift
-bool* Rotword(bool* ){
+// bool* Rotword(bool* ){
 
-}
+// }
 // Subword
 // Rcon
 
 // As we are using AES236 we will take 14 rounds
-string* KeyScheduler(const string& mainkey, const int& N){
+string* KeyScheduler(const string& K0, const int& N){
     string roundkeys[14];
+    bool binary[256];
+    //binary = stringToBinary(K0);
     for(int i=0;i<N;i++){
 
     }
@@ -42,6 +48,11 @@ int main(){
 
     string plaintext;
     cin >> plaintext;
-    cout << stringToBinary(plaintext);
+    bool* binary = stringToBinary(plaintext);
+    bool b[256];
+    for(int i = 0; i<256 ; i++){
+        b[i] = *(binary + i);
+        cout << b[i];
+    }
     return 0;
 }
