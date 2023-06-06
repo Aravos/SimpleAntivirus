@@ -24,6 +24,28 @@ bool* stringToBinary(const string& text) {
     //cout << binary << endl;
     return binary;
 }
+#include <iostream>
+
+bool** Word(bool* rawform){
+    bool** final = new bool*[8];
+    for (int i = 0; i < 8; ++i) {
+        final[i] = new bool[32];
+    }
+    for(int i = 0; i<8 ; i++){
+        int m = 0;
+        for(int j = 0; j<32; j++){
+            int col = j % 8; 
+            if(col==0){
+                m+=1;
+            }
+            final[i][j] = *(rawform + i*8+m*64+col);
+            cout << final[i][j];
+        }
+        
+    }
+    cout << final << endl;
+    return final;
+}
 
 //RotWord = one-byte left circular shift
 // bool* Rotword(bool* ){
@@ -49,10 +71,19 @@ int main(){
     string plaintext;
     cin >> plaintext;
     bool* binary = stringToBinary(plaintext);
+    bool** words = Word(binary);
+    cout << words << endl;
     bool b[256];
     for(int i = 0; i<256 ; i++){
         b[i] = *(binary + i);
-        cout << b[i];
+        //cout << b[i];
     }
+    for(int i = 0; i<8 ; i++){
+        for(int j = 0; j<32; j++){
+            cout << words[i][j] ;
+        }
+        cout << endl;
+    }
+
     return 0;
 }
