@@ -12,6 +12,7 @@ void quarantineFile(const string& filePath) {
     delete[] charArray;
 
     // Move the file to the quarantine location
+    // c_str is used to obtain a pointer to the character array
     BOOL moveFileSuccess = MoveFileEx(filePath.c_str(), newFilePath.c_str(), MOVEFILE_REPLACE_EXISTING);
 
     if(moveFileSuccess){
