@@ -1,7 +1,39 @@
 #include <iostream>
 #include <windows.h>
 #include <vector>
+#include <cstdlib>
+#include <fstream>
+#include <cstdio>
 using namespace std;
+
+string calculateHash(string input){
+    ofstream file("input.txt");
+    if (file.is_open()) {
+        file << input;
+        file.close();
+    }
+
+    system("python hash.py");
+
+    // Read the hash value from the file
+    ifstream infile("output.txt");
+    string hash_value;
+    if (infile.is_open()) {
+        getline(infile, hash_value);
+        infile.close();
+    }
+    // Delete input.txt
+    // if (remove("input.txt") != 0) {
+    //     cout << "Error deleting input.txt" << endl;
+    // }
+
+    // // Delete output.txt
+    // if (remove("output.txt") != 0) {
+    //     cout << "Error deleting output.txt" << endl;
+    // }
+
+    return hash_value;
+}
 
 void quarantineFile(const string& filePath) {
     const int length = filePath.length();
@@ -139,6 +171,9 @@ int main() {
     node->path = directoryPath;
     Scan(directoryPath,node);
     PrintTree(node,"",true);
+
+    // Print the hash value
+    std::cout << "Hash value: " <<  calculateHash("Hello") << std::endl;
 
     //quarantineFile("C:\\Users\\Aravo\\OneDrive\\Desktop\\Hello.txt");
     return 0;
